@@ -1,11 +1,19 @@
-LEasyPremissions
-框架亮点
-首款也是唯一一款适配 Android 11 的权限请求框架
+# LEasyPremission
+一款简单的权限框架
 
-简洁易用：采用链式调用的方式，使用只需一句代码
+# 我的理念概述
+我的理念的是能用一行代码解决的是，绝对不用两行
+其实编写依赖库的目的就是将一个功能尽可能的完善
+代码调用方便，简洁
 
-集成步骤
+# [LEasyPremission简书地址](https://github.com/freedomangelly/LEasyPremission)
+
+# 优点
+简洁易用：采用链式调用的方式，使用只需一句代码,其实是建造者模式链式调用
+
+# 集成步骤
 在项目根目录下的 build.gradle 文件中加入
+```java
 buildscript {
     repositories {
         maven { url 'https://jitpack.io' }
@@ -16,7 +24,9 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 }
+```
 在项目 app 模块下的 build.gradle 文件中加入
+```java
 android {
     // 支持 JDK 1.8
     compileOptions {
@@ -29,8 +39,9 @@ dependencies {
     // 权限请求框架
     implementation 'com.github.freedomangelly:LEasyPremission:0.0.0.1'
 }
-
 ```
+# 使用方法
+```java
 LEasyPermissions.with(this)
         // 申请安装包权限
         //.permission(Permission.REQUEST_INSTALL_PACKAGES)
@@ -49,25 +60,31 @@ LEasyPermissions.with(this)
             @Override
             public void onGranted(List<String> permissions, boolean all) {
                 if (all) {
-                    toast("权限成功");
+                   LogUtil.i("权限成功");
                 } else {
-                    toast("获取部分权限成功，但部分权限未正常授予");
+                    LogUtil.i("获取部分权限成功，但部分权限未正常授予");
                 }
             }
 
             @Override
             public void onDenied(List<String> permissions, boolean never) {
                 if (never) {
-                    toast("被永久拒绝授权，请手动授予录音和日历权限");
+                    LogUtil.i("被永久拒绝授权，请手动授予录音和日历权限");
                     // 如果是被永久拒绝就跳转到应用权限系统设置页面
                     LEasyPermissions.startPermissionActivity(MainActivity.this, permissions);
                 } else {
-                    toast("获取录音和日历权限失败");
+                   LogUtil.i("获取录音和日历权限失败");
                 }
             }
         });
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LEasyPermissions.REQUEST_CODE) {
+            LogUtil.i("检测到你刚刚从权限设置界面返回回来");
+        }
+    }
+
 ```
-
-
 
